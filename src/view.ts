@@ -17,7 +17,7 @@ export default function view <T extends object>(e: Entity<T>): T {
 }
 
 
-function createHandler <T extends object>(e: Entity<T>): ProxyHandler<T> {
+function createHandler <T extends Record<ECSKey, any>>(e: Entity<T>): ProxyHandler<T> {
   return {
     set (t, p, v) {
       const desc = Object.getOwnPropertyDescriptor(t, p);
@@ -28,13 +28,13 @@ function createHandler <T extends object>(e: Entity<T>): ProxyHandler<T> {
           return true;
         }
         if (desc.writable) {
-          e.set(p as keyof T, v);
+          e.set(p, v);
           return true;
         }
         return true;
       }
 
-      e.set(p as keyof T, v);
+      e.set(p, v);
       return true;
     },
 
@@ -47,7 +47,7 @@ function createHandler <T extends object>(e: Entity<T>): ProxyHandler<T> {
         }
       }
 
-      return e.get(p as keyof T);
+      return e.get(p);
     },
 
     has (_, p) {
@@ -63,21 +63,21 @@ function createHandler <T extends object>(e: Entity<T>): ProxyHandler<T> {
       
       if (!desc) return;
 
-      if ('writable' in desc) return Object.assign({}, desc, {value: e.get(p as keyof T)});
+      if ('writable' in desc) return Object.assign({}, desc, {value: e.get(p)});
 
       return Object.assign({}, desc);
     },
 
     defineProperty(t, p, a) {
       if ('value' in a) {
-        e.set(p as keyof T, a.value);
+        e.set(p, a.value);
         return Reflect.defineProperty(t, p, {enumerable: a.enumerable, configurable: a.configurable, writable: a.writable});
       }
 
       return Reflect.defineProperty(t, p, a);
     },
     deleteProperty (t, p) {
-      return e.delete(p as keyof T) && delete t[p as keyof T];
+      return e.delete(p) && delete t[p];
     },
 
     getPrototypeOf () { return null; },
