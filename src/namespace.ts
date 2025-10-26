@@ -1,11 +1,11 @@
 export const
-  Method = {
-    Clear: 'clear',
-    Delete: 'delete',
-    Entries: 'entries',
-    Get: 'get',
-    Has: 'has',
-    Keys: 'keys',
-    Set: 'set',
-    Values: 'values'
+  METHOD = {
+    CLEAR: 'clear',
+    DELETE: 'delete',
+    ENTRIES: 'entries',
+    GET: 'get',
+    HAS: 'has',
+    KEYS: 'keys',
+    SET: 'set',
+    VALUES: 'values'
   } as const;
